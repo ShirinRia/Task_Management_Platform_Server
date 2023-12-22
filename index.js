@@ -72,6 +72,23 @@ async function run() {
             const result = await usercollection.updateOne(query, updateuserdb);
             res.send(result)
         })
+        // update task status
+        app.patch('/assignments', async (req, res) => {
+
+            const task = req.body
+            const query = {
+                _id: new ObjectId(task.id)
+            }
+
+            const updatetaskdb = {
+                $set: {
+                    status: task.status
+                },
+            };
+            // Update the first document that matches the filter
+            const result = await assignmentscollection.updateOne(query, updatetaskdb);
+            res.send(result)
+        })
 
         // add advertise to database
         app.post('/assignments', async (req, res) => {
@@ -88,70 +105,18 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        // get cart data for a user from mongodb
-        app.get('/carts/:uid', async (req, res) => {
-            const uid = req.params.uid
-            console.log(uid)
-            const query = {
-                UserUid: uid
-                // _id:uid
-            }
-            const cursor = await cartcollection.find(query)
-            const result = await cursor.toArray();
-            res.send(result)
-        })
-
-
-        // update product data
-        app.put('/products/:BrandName/:id', async (req, res) => {
-
+        
+        // delete task
+        app.delete('/task/:id', async (req, res) => {
             const id = req.params.id
-            const brand = req.params.BrandName
-            const query = {
-                BrandName: brand,
-                _id: new ObjectId(id)
-            }
-            /* Set the upsert option to insert a document if no documents match the filter */
-            const options = {
-                upsert: true
-            };
-            // Specify the update to set a value for the plot field
-            const updateproduct = req.body
-            console.log(updateproduct)
-            const updateproductdoc = {
-                $set: {
-                    product_name: updateproduct.product_name,
-                    BrandName: updateproduct.BrandName,
-                    product_type: updateproduct.product_type,
-                    product_price: updateproduct.product_price,
-                    product_rating: updateproduct.product_rating,
-                    product_description: updateproduct.product_description,
-                    product_photo: updateproduct.product_photo,
-                    product_amount: updateproduct.product_amount
-
-                },
-            };
-
-            // Update the first document that matches the filter
-            const result = await productcollection.updateOne(query, updateproductdoc, options);
-            res.send(result)
-        })
-
-        // delete data from cart
-        app.delete('/carts/:id', async (req, res) => {
-            const id = req.params.id
-            console.log('cartid', id)
+           
             const query = {
                 _id: new ObjectId(id)
             }
-            const result = await cartcollection.deleteOne(query)
+            const result = await assignmentscollection.deleteOne(query)
             res.send(result)
         })
-        // Send a ping to confirm a successful connection
-        // await client.db("admin").command({
-        //   ping: 1
-        // });
-        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
+       
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
