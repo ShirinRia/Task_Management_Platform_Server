@@ -10,10 +10,10 @@ var app = express()
 
 // app.use(cors())
 app.use(cors({
-    origin: ['http://localhost:5173'],
-    credentials: true
+        origin: ['http://localhost:5173'],
+        credentials: true
 
-  }
+    }
 
 ))
 app.use(express.json())
@@ -73,24 +73,19 @@ async function run() {
             res.send(result)
         })
 
-         // add advertise to database
-         app.post('/assignments', async (req, res) => {
+        // add advertise to database
+        app.post('/assignments', async (req, res) => {
             const assignments = req.body
             console.log(assignments)
             const result = await assignmentscollection.insertOne(assignments);
             res.send(result)
         })
 
-        // get specific id data from mongodb
-        app.get("/products/:brand/:id", async (req, res) => {
-            const brand = req.params.brand
-            const id = req.params.id
-            const query = {
-                BrandName: brand,
-                _id: new ObjectId(id)
-            }
-            const result = await productcollection.findOne(query)
+        // get task data from mongodb
+        app.get('/assignments', async (req, res) => {
 
+            const cursor = assignmentscollection.find();
+            const result = await cursor.toArray();
             res.send(result)
         })
         // get cart data for a user from mongodb
