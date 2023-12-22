@@ -54,7 +54,13 @@ async function run() {
             res.send(result)
         })
 
-
+        // get all users from database
+        app.get('/users', async (req, res) => {
+            // console.log(req.headers)
+            const cursor = usercollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
         // update userdata
         app.patch('/users', async (req, res) => {
 
@@ -105,18 +111,18 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        
+
         // delete task
         app.delete('/task/:id', async (req, res) => {
             const id = req.params.id
-           
+
             const query = {
                 _id: new ObjectId(id)
             }
             const result = await assignmentscollection.deleteOne(query)
             res.send(result)
         })
-       
+
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
